@@ -31,22 +31,26 @@ def main():
             ball_shape = add_ball(space)
             balls.append(ball_shape)
 
-        space.step(1/50.0) #3
+        space.step(1/50.0)  # 3
         screen.fill((255,255,255))  # 越后面添加上去的 越在画布的上面
 
         draw_lines(screen, lines)
 
         balls_to_remove = []
         for ball in balls:
-            if ball.body.position.y < 0: # 1
-                balls_to_remove.append(ball) # 2
+            if ball.body.position.y < 0:  # 1
+                balls_to_remove.append(ball)  # 2
 
         for ball in balls_to_remove:
             space.remove(ball, ball.body)  # 删除一个pymunk中的object，要同时删掉其body和shape
-            balls.remove(ball) # 4
+            balls.remove(ball)  # 4
 
         for ball in balls:
             draw_ball(screen, ball)
+
+        x, y = pygame.mouse.get_pos()  # 获得鼠标的位置
+        drawText(screen, "("+str(x)+","+str(y)+")", x, y)
+        # print(pygame.font.get_fonts())
 
         pygame.display.flip()
 
@@ -63,6 +67,14 @@ def add_ball(space):
     shape = pymunk.Circle(body, radius)  # 设置碰撞的形状
     space.add(body, shape)  # 5
     return shape
+
+
+def drawText(self, text, posx, posy, textHeight=24, fontColor=(0, 0, 0), backgroudColor=(255,255,255)):
+    fontObj = pygame.font.SysFont('arial', textHeight)  # 通过字体文件获得字体对象
+    textSurfaceObj = fontObj.render(text, True, fontColor, backgroudColor)  # 配置要显示的文字
+    textRectObj = textSurfaceObj.get_rect()  # 获得要显示的对象的rect
+    textRectObj.center = (posx, posy)  # 设置显示对象的坐标
+    self.blit(textSurfaceObj, textRectObj)  # 绘制字
 
 
 def draw_ball(screen, ball):
@@ -106,7 +118,7 @@ def draw_lines(screen, lines):  # 通过pymunk空间里线 在pygame里划线
     for line in lines:
         body = line.body  # 拿到line的body
         pv1 = body.position + line.a.rotated(body.angle)  # 这里的角度是0
-        pv2 = body.position + line.b.rotated(body.angle)  #  line.b就是线的第二个断点的坐标
+        pv2 = body.position + line.b.rotated(body.angle)  # line.b就是线的第二个断点的坐标
         p1 = to_pygame(pv1)  # 2
         p2 = to_pygame(pv2)
         pygame.draw.lines(screen, (255, 0, 0), False, [p1,p2])

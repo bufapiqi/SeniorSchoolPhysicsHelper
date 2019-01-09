@@ -38,7 +38,7 @@ class mouseDisplay(cos.layer.Layer):
         'modifiers' 是一个按位或pyglet.window.key修饰符常量
            (值如 'SHIFT', 'OPTION', 'ALT')
         """
-        print(str(dx) + "      " + str(dy))
+        point = cos.draw.Circle
         self.update_text(x, y)
 
     def on_mouse_press(self, x, y, buttons, modifiers):
