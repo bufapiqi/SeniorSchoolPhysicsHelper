@@ -5,19 +5,23 @@ import pymunk
 
 
 class Ball:
-    def __init__(self, mass, in_radius:int, out_radius: int, position: tuple, moment: int=None):
+    def __init__(self, mass, in_radius: int, out_radius: int, position: tuple, moment: int=None, is_static: bool=False):
         self.__mass = mass
         self.__in_radius = in_radius
         self.__out_radius = out_radius
         self.__position = position
         self.__moment = moment
+        self.__is_static = is_static
         self.__body = None
         self.__shape = None
 
     def create_ball_in_space(self):
         if self.__moment is None:
             self.__moment = pymunk.moment_for_circle(self.__mass, self.__in_radius, self.__out_radius)
-        self.__body = pymunk.Body(self.__mass, self.__moment)
+        if self.__is_static:
+            self.__body = pymunk.Body(self.__mass, self.__moment, body_type=pymunk.Body.STATIC)
+        else:
+            self.__body = pymunk.Body(self.__mass, self.__moment)
         self.__body.position = self.__position
         self.__shape = pymunk.Circle(self.__body, self.__out_radius)
 
