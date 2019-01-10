@@ -16,23 +16,31 @@ def main():
     # lines = add_static_L(space)
     lines = add_L(space)
     balls = []
+    points = []
     ticks_to_next_ball = 10
+    leftdown = False
     while True:
+        screen.fill((255, 255, 255))  # 越后面添加上去的 越在画布的上面
         for event in pygame.event.get():
             if event.type == QUIT:
                 sys.exit(0)
             elif event.type == KEYDOWN and event.key == K_ESCAPE:
                 sys.exit(0)
+            elif event.type == MOUSEBUTTONDOWN and event.button == 1:
+                leftdown = True
+            elif event.type == MOUSEBUTTONUP and event.button == 1:
+                leftdown = False
+            elif leftdown and event.type == MOUSEMOTION:
+                x, y = event.pos
+                points.append((x, y))
 
-
-        ticks_to_next_ball -= 1
-        if ticks_to_next_ball <= 0:
-            ticks_to_next_ball = 25
-            ball_shape = add_ball(space)
-            balls.append(ball_shape)
+        # ticks_to_next_ball -= 1
+        # if ticks_to_next_ball <= 0:
+        #     ticks_to_next_ball = 25
+        #     ball_shape = add_ball(space)
+        #     balls.append(ball_shape)
 
         space.step(1/50.0)  # 3
-        screen.fill((255,255,255))  # 越后面添加上去的 越在画布的上面
 
         draw_lines(screen, lines)
 
@@ -48,22 +56,25 @@ def main():
         for ball in balls:
             draw_ball(screen, ball)
 
+        for i in range(len(points)-1):
+            p1 = points[i]
+            p2 = points[i+1]
+            pygame.draw.lines(screen, (255, 0, 0), False, [p1, p2])
+
         x, y = pygame.mouse.get_pos()  # 获得鼠标的位置
         drawText(screen, "("+str(x)+","+str(y)+")", x, y)
         # print(pygame.font.get_fonts())
-
         pygame.display.flip()
 
         clock.tick(50)
 
 
-def add_ball(space):
+def add_ball(space, x, y):
     mass = 1  # 设置质量
     radius = 14  # 设置圆的半径
     moment = pymunk.moment_for_circle(mass, 0, radius)  # 计算惯性矩：截面抵抗弯曲的性质（质量， 内半径， 外半径；实心圆的内径是0）
     body = pymunk.Body(mass, moment)  # 根据moment mass 创建一个body
-    x = random.randint(120, 380)
-    body.position = x, 550  # 3
+    body.position = x, y  # 3
     shape = pymunk.Circle(body, radius)  # 设置碰撞的形状
     space.add(body, shape)  # 5
     return shape
@@ -80,6 +91,10 @@ def drawText(self, text, posx, posy, textHeight=24, fontColor=(0, 0, 0), backgro
 def draw_ball(screen, ball):
     p = int(ball.body.position.x), 600-int(ball.body.position.y)
     pygame.draw.circle(screen, (0, 0, 255), p, int(ball.radius), 2)
+
+
+def draw_points(screen, points):
+    pygame.draw.rect(screen, [255, 0, 0], [points[0], points[1], 1, 1], 1)
 
 
 def add_static_L(space):  # 在pymunk的space空间里添加线
@@ -121,7 +136,7 @@ def draw_lines(screen, lines):  # 通过pymunk空间里线 在pygame里划线
         pv2 = body.position + line.b.rotated(body.angle)  # line.b就是线的第二个断点的坐标
         p1 = to_pygame(pv1)  # 2
         p2 = to_pygame(pv2)
-        pygame.draw.lines(screen, (255, 0, 0), False, [p1,p2])
+        pygame.draw.lines(screen, (255, 0, 0), False, [p1, p2])
 
 
 def to_pygame(p):  # 从pymunk到pygame的坐标转换
