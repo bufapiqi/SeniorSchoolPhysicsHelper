@@ -28,7 +28,7 @@ class Line:
     def is_created(self):
         return self.__body is not None
 
-    def draw_line(self, screen, color, ):
+    def draw_line(self, screen, color):
         pv1 = self.__body.position + self.__line.a.rotated(self.__body.angle)
         pv2 = self.__body.position + self.__line.b.rotated(self.__body.angle)
         # todo 转换坐标
