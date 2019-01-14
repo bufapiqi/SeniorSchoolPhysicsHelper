@@ -2,6 +2,7 @@ import sys
 import random
 import pygame
 from pygame.locals import *
+from SeniorSchoolPhysicsHelper.model.arc import Arc
 import pymunk
 
 def main():
@@ -12,6 +13,12 @@ def main():
 
     space = pymunk.Space()  # 2  创建一个space， space是模拟的基本单位，可以在space上添加bodies,shapes,和joints
     space.gravity = (0.0, -900.0)  # 设置 space的重力
+
+    a = Arc((0, 200), (200, 0))
+    a.create_arc_in_space()
+    temp_s = a.arc_shapes
+    for i in temp_s:
+        space.add(i)
 
     # lines = add_static_L(space)
     lines = add_L(space)
@@ -27,12 +34,17 @@ def main():
             elif event.type == KEYDOWN and event.key == K_ESCAPE:
                 sys.exit(0)
             elif event.type == MOUSEBUTTONDOWN and event.button == 1:
-                leftdown = True
-            elif event.type == MOUSEBUTTONUP and event.button == 1:
-                leftdown = False
-            elif leftdown and event.type == MOUSEMOTION:
+                # leftdown = True
                 x, y = event.pos
-                points.append((x, y))
+                ball_shape = add_ball(space, x, 600-y)
+                balls.append(ball_shape)
+            elif event.type == MOUSEBUTTONUP and event.button == 1:
+                # leftdown = False
+                pass
+            elif leftdown and event.type == MOUSEMOTION:
+                pass
+                # x, y = event.pos
+                # points.append((x, y))
 
         # ticks_to_next_ball -= 1
         # if ticks_to_next_ball <= 0:
@@ -63,6 +75,7 @@ def main():
 
         x, y = pygame.mouse.get_pos()  # 获得鼠标的位置
         drawText(screen, "("+str(x)+","+str(y)+")", x, y)
+        a.draw_arc(screen, (255, 0, 0))
         # print(pygame.font.get_fonts())
         pygame.display.flip()
 
