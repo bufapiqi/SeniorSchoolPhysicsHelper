@@ -1,13 +1,40 @@
-""" 一个弧线线的model，每一个实例都是pymunk空间中的一个弧线实体，可以在直接调用draw方法来画自己
+""" 一个image的model，每一个实例都是pymunk空间中的一个image实体，可以在直接调用draw方法来画自己
 """
 import pygame
 import pymunk
 import pymunk.autogeometry
+import pymunk.pygame_util
+# todo 要查看一下 如何使用autogeometry这个来创建shape
 
 
 class ImgModel:
-    def __init__(self, img_path: str, bounding_box: tuple, ):  # mass body is_static moment   centroid?
-        pass
+    def __init__(self, image, centroid: tuple, is_static: bool=False):
+        self.__image = image
+        self.__centroid = centroid
+        self.__is_static = is_static
+        self.__line_set = pymunk.autogeometry.PolylineSet()
+
+    def create_model(self):
+        img_bb = pymunk.BB(0, 0, self.__image.get_width(), self.__image.get_height())
+        self.__image.lock()
+        # pymunk.autogeometry.march_soft(
+        #     img_bb,
+        #     self.__image.get_width(), self.__image.get_height(),
+        #     99,
+        #     segment_func,
+        #     sample_func=sample_func)
+        # logo_img.unlock()
+
+    def sample_func(self, point):
+        try:
+            p = pymunk.pygame_util.to_pygame(point, self.__image)
+            color = self.__image.get_at(p)
+            return color.a
+        except:
+            return 0
+
+    def __segment_func(self, v0, v1):
+        self.__line_set.collect_segment(v0, v1)
 
 
 
