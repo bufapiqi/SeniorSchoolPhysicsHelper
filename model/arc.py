@@ -5,6 +5,7 @@ import pygame
 import pymunk
 import math
 import pymunk.autogeometry
+from SeniorSchoolPhysicsHelper.util.math_util import one_dot_round, coordinates_transform
 
 
 class Arc:
@@ -29,12 +30,24 @@ class Arc:
             v1 = self.__points[i+1]
             line_set.collect_segment(v0, v1)
         for line in line_set:
-            self.__points = pymunk.autogeometry.simplify_curves(line, .7)  # 平滑曲线
-            for i in range(len(line) - 1):
+            line = Arc.round_point(pymunk.autogeometry.simplify_curves(line, .7))  # 平滑曲线上
+            pygame_coordinate = []
+            for i in line:
+                py_x, py_y = coordinates_transform(i)  # 把pymunk的坐标转换成pygame的坐标系
+                pygame_coordinate.append((py_x, py_y))
+            self.__points = line
+            for i in range(len(pygame_coordinate) - 1):
                 body = pymunk.Body(body_type=pymunk.Body.STATIC)
-                shape = pymunk.Segment(body, line[i], line[i+1], 1)
+                shape = pymunk.Segment(body, pygame_coordinate[i], pygame_coordinate[i+1], 1)
                 shape.friction = self.__fraction
                 self.__shapes.append(shape)
+
+    @staticmethod
+    def round_point(points: list):
+        temp_list = []
+        for i in points:
+            temp_list.append((one_dot_round(i[0]), one_dot_round(i[1])))
+        return temp_list
 
     @staticmethod
     def __caculate_coordinates(points: list, step: float, radius: int, centroid: tuple):
@@ -44,12 +57,11 @@ class Arc:
         while start <= 91:
             y = radius * math.cos(math.radians(start))
             x = radius * math.sin(math.radians(start))
-            points.append((centroid[0]-x, centroid[1]-y))  # todo 需要根据不同方向的弧线，转换不同的坐标
+            points.append((centroid[0]-x, y))  # todo 需要根据不同方向的弧线，转换不同的坐标
             start = start + step
         return points
 
     def draw_arc(self, screen, color: tuple):
-        # todo  画的时候 需要转换坐标
         pygame.draw.lines(screen, color, False, self.__points)
 
     @staticmethod

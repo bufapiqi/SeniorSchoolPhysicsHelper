@@ -22,6 +22,7 @@ class Poly:
         if self.__moment is None:
             self.__moment = pymunk.moment_for_poly(self.__mass, self.__poly_points)
         self.__body = pymunk.Body(self.__mass, self.__moment)
+        # todo pygame与pmunk的坐标转换
         self.__body.position = Vec2d(self.__centroid)
         self.__shape = pymunk.Poly(self.__body, self.__poly_points)
         self.__shape.friction = self.__poly_fraction
@@ -39,8 +40,6 @@ class Poly:
 
     def draw_poly(self, screen, poly_color, width=0):  # width=0代表填充整个多边形区域
         points = self.__poly_points
-        # todo pygame与pmunk的坐标转换
-
         pygame.draw.polygon(screen, poly_color, points, width)
 
     @property

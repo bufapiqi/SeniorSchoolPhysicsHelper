@@ -21,6 +21,7 @@ class Line:
             self.__body = pymunk.Body(body_type=pymunk.Body.STATIC)
         else:
             self.__body = pymunk.Body()
+        # todo 转换坐标
         self.__body.position = self.__center_point
         self.__line = pymunk.Segment(self.__body, self.__a_point, self.__b_point, self.__line_width)
         self.__line.friction = self.__fraction
@@ -31,11 +32,7 @@ class Line:
     def draw_line(self, screen, color):
         pv1 = self.__body.position + self.__line.a.rotated(self.__body.angle)
         pv2 = self.__body.position + self.__line.b.rotated(self.__body.angle)
-        # todo 转换坐标
-        p1 = pv1
-        p2 = pv2
-        # 转换坐标
-        pygame.draw.line(screen, color, p1, p2)
+        pygame.draw.line(screen, color, pv1, pv2)
 
     @property
     def body(self):

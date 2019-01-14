@@ -5,5 +5,7 @@ def one_dot_round(inp: float):
     else:
         return int(inp)
 
+
 def coordinates_transform(coordinate: tuple):
-    pass
+    #  todo 等屏幕大小的配置文件写好之后，改成相应的
+    return int(coordinate[0]), int(-coordinate[1]+600)
