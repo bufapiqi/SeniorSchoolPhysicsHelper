@@ -1,7 +1,9 @@
-""" 弹簧joint,是baseJoint的子类
+""" 弹簧joint,是baseJoint的子类.暂时只支持 竖直方向和水平方向. 如果想加强，修改draw即可
 """
 import pymunk
 from SeniorSchoolPhysicsHelper.model.base_joint import BaseJoint
+import math
+from SeniorSchoolPhysicsHelper.util.Vector2D import Vec2d
 
 
 class DampedJoint(BaseJoint):
@@ -21,7 +23,19 @@ class DampedJoint(BaseJoint):
                                           self.__rest_length, self.__stiffness, self.__damping)
 
     def draw_joint(self):
-        # todo  实现画图的逻辑
+        # todo  实现画弹簧的逻辑
+        # 第一个点的坐标
+        anchor_a = self.__anchor_a
+        # 第二个点的坐标
+        anchor_b = self.__anchor_b
+        # 计算ab之间的总长
+        len_ab = math.sqrt((anchor_a[0] - anchor_b[0])**2 + (anchor_a[1] - anchor_b[1])**2)
+        # 画出连接第一个点的直线 （长度固定）
+
+        # 画出连接第二个点的直线 （长度固定）
+        # 算出第一个点跟第二个点，减去直线长度之后的距离
+        # 计算线的坐标
+        # 画出弹簧的形状
         pass
 
     @property
