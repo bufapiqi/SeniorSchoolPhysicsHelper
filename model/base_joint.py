@@ -16,7 +16,7 @@ class BaseJoint(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def draw_joint(self):
+    def draw_joint(self, screen, color: tuple):
         pass
 
     def is_created(self):

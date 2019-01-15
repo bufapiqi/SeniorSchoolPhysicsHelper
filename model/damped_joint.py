@@ -1,8 +1,8 @@
 """ 弹簧joint,是baseJoint的子类.暂时只支持 竖直方向和水平方向. 如果想加强，修改draw即可
 """
 import pymunk
+import pygame
 from SeniorSchoolPhysicsHelper.model.base_joint import BaseJoint
-import math
 from SeniorSchoolPhysicsHelper.util.Vector2D import Vec2d
 
 
@@ -22,21 +22,27 @@ class DampedJoint(BaseJoint):
         self._joint = pymunk.DampedSpring(self._body_a, self._body_b, self.__anchor_a, self.__anchor_b,
                                           self.__rest_length, self.__stiffness, self.__damping)
 
-    def draw_joint(self):
+    def draw_joint(self, screen, color: tuple):
         # todo  实现画弹簧的逻辑
-        # 第一个点的坐标
-        anchor_a = self.__anchor_a
-        # 第二个点的坐标
-        anchor_b = self.__anchor_b
+        # 用第一个点得来的向量
+        vector_a = Vec2d(self.__anchor_a)
+        # 用第二个点得来的向量
+        vector_b = Vec2d(self.__anchor_b)
         # 计算ab之间的总长
-        len_ab = math.sqrt((anchor_a[0] - anchor_b[0])**2 + (anchor_a[1] - anchor_b[1])**2)
+        len_ab = vector_a.get_distance(vector_b)
         # 画出连接第一个点的直线 （长度固定）
-
+        line_a = ((vector_b - vector_a) / 10) + vector_a
+        pygame.draw.line(screen, color, vector_a, line_a)
         # 画出连接第二个点的直线 （长度固定）
-        # 算出第一个点跟第二个点，减去直线长度之后的距离
-        # 计算线的坐标
-        # 画出弹簧的形状
-        pass
+        line_b = ((vector_a - vector_b) / 10) + vector_b
+        pygame.draw.line(screen, color, vector_b, line_b)
+        # 画出弹簧
+        step = len_ab / 20
+        angle = vector_a.get_angle()
+        for i in range(1, 16, 2):
+            temp_middle = line_a + step * i
+            # todo 徐海溦
+            pass
 
     @property
     def anchor(self):

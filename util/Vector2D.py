@@ -327,3 +327,10 @@ class Vec2d(object):
 
     def __setstate__(self, dict):
         self.x, self.y = dict
+
+if __name__ == '__main__':
+    a = Vec2d(0, 1)
+    b = Vec2d(1, 0)
+    ab  = b - a
+    # print(ab.get_)
+    print(ab.get_angle())
