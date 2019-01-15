@@ -1,7 +1,8 @@
 """ joint的Factory，用来创建各种各样的joint
 """
 import threading
-import pymunk
+from SeniorSchoolPhysicsHelper.model.damped_joint import DampedJoint
+from SeniorSchoolPhysicsHelper.model.base_joint import BaseJoint
 
 
 class JointFactory:
@@ -21,9 +22,8 @@ class JointFactory:
         if not JointFactory.is_illegal(joint_type):
             raise RuntimeError("ILLegal joint_type !!!")
         if joint_type == "DampedSpring":
-            # body_a, body_b, anchor_a, anchor_b, rest_length, stiffness, damping
-            # todo 这里要把DampedSpring包装起来
-            dp = pymunk.DampedSpring(args[0], args[1], args[2], args[3], args[4], args[5], args[6])
+            dp: BaseJoint = DampedJoint(args[0], args[1], args[2], args[3], args[4], args[5], args[6])
+            dp.create_joint_in_space()
             return dp
         return None
 
