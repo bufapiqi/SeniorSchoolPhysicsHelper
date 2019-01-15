@@ -17,9 +17,8 @@ todo:
 2. 完成img_model
 3. menu里选项的一个通用model
 4. 坐标转换的东西（通过配置文件读取）
-5. joint的model，使用工厂创建
-6. 弹簧球的model
-7. 自定义形状的model，或者滚轮的那种model得讨论一下
+5. 其他joint的model都要实现
+6. 自定义形状的model，或者滚轮的那种model得讨论一下
 
 
 question:
