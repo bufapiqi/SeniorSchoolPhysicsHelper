@@ -4,41 +4,37 @@
 import pygame
 from pygame import image
 from util.Vector2D import Vec2d
+from util.math_util import caculate_position_with_menu
 
 
 class MenuItem:
 
-    def __init__(self, up_image: image, down_image: image, relative_position: int):
-        self.__up_image = up_image
-        self.__down_image = down_image
+    def __init__(self, up_image: image, down_image: image, menu_rect: tuple, relative_position: int, num_items: int):
+        point_a, point_b = caculate_position_with_menu(menu_rect, relative_position, num_items)
+        upimage = up_image.convert_alpha()
+        downimage = down_image.convert_alpha()
+        self.__up_image = pygame.transform.scale(upimage, (abs(point_b[0] - point_a[0]), abs(point_b[1] - point_a[1])))
+        self.__down_image = pygame.transform.scale(downimage, (abs(point_b[0] - point_a[0]), abs(point_b[1] - point_a[1])))
         self.__relative_position = relative_position
+        self.__start_point = point_a
+        self.__end_point = point_b
+        self.__menu_rect = menu_rect
+        self.__num_items = num_items
 
-    def draw_item(self, screen, menu_rect: tuple):
-        # caculate_position_with_menu()
-        # w, h = self.imageUp.get_size()
-        # x, y = self.position
-        #
-        # if self.isOver():
-        #     screen.blit(self.imageDown, (x-w/2,y-h/2))
-        # else:
-        #     screen.blit(self.imageUp, (x-w/2, y-h/2))
-        pass
+    def draw_item(self, screen):
+        if self.is_click():
+            screen.blit(self.__up_image, self.__start_point)
+        else:
+            screen.blit(self.__down_image, self.__start_point)
 
-    def is_click(self, rect: tuple):
+    def is_click(self):
         point_x, point_y = pygame.mouse.get_pos()
-        point_a, point_b = MenuItem.caculate_position_with_menu(rect)
-        position = (Vec2d(point_b) - Vec2d(point_a)) / 2 + Vec2d(point_a)
+        position = (Vec2d(self.__end_point) - Vec2d(self.__start_point)) / 2 + Vec2d(self.__start_point)
         x, y = position.x, position.y
         w, h = self.__up_image.get_size()
-
         in_x = x - w/2 < point_x < x + w/2
         in_y = y - h/2 < point_y < y + h/2
         return in_x and in_y
-
-    @staticmethod
-    def caculate_position_with_menu(rect: tuple):
-        # todo 从相对位置计算 在screen上的绝对位置
-        return (0, 0), (0, 0)
 
     @property
     def up_image(self):
@@ -51,3 +47,11 @@ class MenuItem:
     @property
     def relative_position(self):
         return self.__relative_position
+
+    @property
+    def start_point(self):
+        return self.__start_point
+
+    @property
+    def end_point(self):
+        return self.__end_point
