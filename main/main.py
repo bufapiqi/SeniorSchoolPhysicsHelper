@@ -4,7 +4,7 @@
 import sys
 import pygame
 from pygame.locals import *
-from model.arc import Arc
+from SeniorSchoolPhysicsHelper.ymodel.arc import Arc
 import math
 
 
