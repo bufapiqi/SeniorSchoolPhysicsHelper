@@ -2,8 +2,8 @@
 """
 import pymunk
 import pygame
-from SeniorSchoolPhysicsHelper.model.base_joint import BaseJoint
-from SeniorSchoolPhysicsHelper.util.Vector2D import Vec2d
+from model.base_joint import BaseJoint
+from util.Vector2D import Vec2d
 
 
 class DampedJoint(BaseJoint):

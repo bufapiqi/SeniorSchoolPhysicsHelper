@@ -5,7 +5,7 @@ import pygame
 import pymunk
 import math
 import pymunk.autogeometry
-from SeniorSchoolPhysicsHelper.util.math_util import one_dot_round, coordinates_transform
+from util.math_util import one_dot_round, coordinates_transform
 
 
 class Arc:
@@ -62,7 +62,7 @@ class Arc:
         return points
 
     def draw_arc(self, screen, color: tuple):
-        pygame.draw.lines(screen, color, False, self.__points)
+        pygame.draw.aalines(screen, color, False, self.__points)
 
     @staticmethod
     def __get_centroid(start_point: tuple, end_point: tuple, is_up: bool, is_right: bool):

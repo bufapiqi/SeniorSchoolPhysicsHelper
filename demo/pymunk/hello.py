@@ -2,7 +2,7 @@ import sys
 import random
 import pygame
 from pygame.locals import *
-from SeniorSchoolPhysicsHelper.model.arc import Arc
+from model.arc import Arc
 import pymunk
 
 def main():

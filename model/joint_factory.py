@@ -1,8 +1,8 @@
 """ joint的Factory，用来创建各种各样的joint
 """
 import threading
-from SeniorSchoolPhysicsHelper.model.damped_joint import DampedJoint
-from SeniorSchoolPhysicsHelper.model.base_joint import BaseJoint
+from model.damped_joint import DampedJoint
+from model.base_joint import BaseJoint
 
 
 class JointFactory:
