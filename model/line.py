@@ -2,14 +2,15 @@
 """
 import pygame
 import pymunk
+from util.math_util import coordinates_transform
 
 
 class Line:
     def __init__(self, center_point: tuple, a_point: tuple, b_point: tuple, line_width: int,
                  fraction: int=0, is_static: bool=False):
-        self.__center_point = center_point
-        self.__a_point = a_point
-        self.__b_point = b_point
+        self.__center_point = coordinates_transform(center_point)
+        self.__a_point = coordinates_transform(a_point)
+        self.__b_point = coordinates_transform(b_point)
         self.__line_width = line_width
         self.__fraction = fraction
         self.__is_static = is_static
@@ -21,7 +22,6 @@ class Line:
             self.__body = pymunk.Body(body_type=pymunk.Body.STATIC)
         else:
             self.__body = pymunk.Body()
-        # todo 转换坐标
         self.__body.position = self.__center_point
         self.__line = pymunk.Segment(self.__body, self.__a_point, self.__b_point, self.__line_width)
         self.__line.friction = self.__fraction
@@ -30,9 +30,9 @@ class Line:
         return self.__body is not None
 
     def draw_line(self, screen, color):
-        pv1 = self.__body.position + self.__line.a.rotated(self.__body.angle)
-        pv2 = self.__body.position + self.__line.b.rotated(self.__body.angle)
-        pygame.draw.line(screen, color, pv1, pv2)
+        # pv1 = self.__body.position + self.__line.a.rotated(self.__body.angle)
+        # pv2 = self.__body.position + self.__line.b.rotated(self.__body.angle)
+        pygame.draw.line(screen, color, self.__b_point, self.__b_point)
 
     @property
     def body(self):

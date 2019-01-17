@@ -15,11 +15,11 @@
 todo:
 1. menu类（pygame）
 2. 完成img_model
-3. menu里选项的一个通用model
-4. 坐标转换的东西（通过配置文件读取）
-5. 其他joint的model都要实现
-6. 自定义形状的model，或者滚轮的那种model得讨论一下
-7. 可能还包含body的中心点适配问题，要能自动判断坐标和修正坐标
+3. 坐标转换的东西（通过配置文件读取）
+4. 其他joint的model都要实现
+5. 自定义形状的model，或者滚轮的那种model得讨论一下
+6. 可能还包含body的中心点适配问题，要能自动判断坐标和修正坐标
+7. file_util的实现
 
 
 question:
