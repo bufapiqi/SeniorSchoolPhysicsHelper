@@ -7,6 +7,7 @@ from pygame.locals import *
 from model.arc import Arc
 from pygameEngine.menu_item import MenuItem
 from pygameEngine.menu import Menu
+from pygameEngine.text import Text
 import math
 
 
@@ -26,6 +27,8 @@ def main():
     item = MenuItem(up_image, down_image, (menu.rect_s[0], menu.rect_s[1],
                                            menu.rect_e[0], menu.rect_e[1]), 1, 1)
     menu.add_item(item)
+    text = Text("A", 500, 500)
+
 
 
     while True:
@@ -45,6 +48,7 @@ def main():
             pygame.draw.arc(screen, (0, 0, 0), ((200, 200), (100, 100)), 0, math.pi/2, 1)
             # item.draw_item(screen)
             menu.draw_menu(screen)
+            text.draw_text(screen)
             pygame.display.flip()
 
             clock.tick(50)
