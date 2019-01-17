@@ -6,6 +6,7 @@ import pygame
 from pygame.locals import *
 from model.arc import Arc
 from pygameEngine.menu_item import MenuItem
+from pygameEngine.menu import Menu
 import math
 
 
@@ -20,7 +21,11 @@ def main():
     print(sys.argv[0])
     up_image = pygame.image.load("../resources/pause.jpg")
     down_image = pygame.image.load("../resources/play.jpg")
-    item = MenuItem(up_image, down_image, (300, 300, 400, 400), 1, 1)
+    print("length:"+str(up_image.get_width()) + "  height:"+str(up_image.get_height()))
+    menu = Menu((300, 300), (400, 400))
+    item = MenuItem(up_image, down_image, (menu.rect_s[0], menu.rect_s[1],
+                                           menu.rect_e[0], menu.rect_e[1]), 1, 1)
+    menu.add_item(item)
 
 
     while True:
@@ -31,11 +36,15 @@ def main():
                     sys.exit(0)
                 elif event.type == KEYDOWN and event.key == K_ESCAPE:
                     sys.exit(0)
+                elif event.type == MOUSEBUTTONDOWN and event.button == 1:
+                    menu.event = event
+                    # item.event = event
 
             # print(pygame.font.get_fonts())
             a.draw_arc(screen, (255, 0, 0))
             pygame.draw.arc(screen, (0, 0, 0), ((200, 200), (100, 100)), 0, math.pi/2, 1)
-            item.draw_item(screen)
+            # item.draw_item(screen)
+            menu.draw_menu(screen)
             pygame.display.flip()
 
             clock.tick(50)

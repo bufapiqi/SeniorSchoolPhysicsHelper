@@ -32,3 +32,5 @@ def caculate_position_with_menu(rect: tuple, position: int, num_items: int):
     item_end_x = item_start_x + item_width
     item_end_y = item_start_y + item_height
     return (item_start_x, item_start_y), (item_end_x, item_end_y)
+
+

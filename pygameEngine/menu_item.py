@@ -1,6 +1,5 @@
 """ pygame的渲染菜单选项的类，可以把该类添加到menu中，让menu进行集中渲染
 """
-# todo 待完善
 import pygame
 from pygame import image
 from util.Vector2D import Vec2d
@@ -9,7 +8,8 @@ from util.math_util import caculate_position_with_menu
 
 class MenuItem:
 
-    def __init__(self, up_image: image, down_image: image, menu_rect: tuple, relative_position: int, num_items: int):
+    def __init__(self, up_image: image, down_image: image, menu_rect: tuple,
+                 relative_position: int, num_items: int, event=None):
         point_a, point_b = caculate_position_with_menu(menu_rect, relative_position, num_items)
         upimage = up_image.convert_alpha()
         downimage = down_image.convert_alpha()
@@ -20,6 +20,7 @@ class MenuItem:
         self.__end_point = point_b
         self.__menu_rect = menu_rect
         self.__num_items = num_items
+        self.__event = event
 
     def draw_item(self, screen):
         if self.is_click():
@@ -28,7 +29,10 @@ class MenuItem:
             screen.blit(self.__down_image, self.__start_point)
 
     def is_click(self):
-        point_x, point_y = pygame.mouse.get_pos()
+        if self.__event is None:
+            point_x, point_y = 0, 0
+        else:
+            point_x, point_y = self.__event.pos
         position = (Vec2d(self.__end_point) - Vec2d(self.__start_point)) / 2 + Vec2d(self.__start_point)
         x, y = position.x, position.y
         w, h = self.__up_image.get_size()
@@ -55,3 +59,12 @@ class MenuItem:
     @property
     def end_point(self):
         return self.__end_point
+
+    @property
+    def event(self):
+        return self.__event
+
+    @event.setter
+    def event(self, event):
+        self.__event = event
+
