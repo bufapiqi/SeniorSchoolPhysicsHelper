@@ -3,6 +3,7 @@ import random
 import pygame
 from pygame.locals import *
 from model.arc import Arc
+from model.line import Line
 import pymunk
 
 def main():
@@ -19,6 +20,10 @@ def main():
     temp_s = a.arc_shapes
     for i in temp_s:
         space.add(i)
+
+    tl = Line((150, 150), (-10, 0), (100, 0), 5, is_static=True)
+    tl.create_line_in_space()
+    space.add(tl.line)
 
     # lines = add_static_L(space)
     lines = add_L(space)
@@ -76,6 +81,7 @@ def main():
         x, y = pygame.mouse.get_pos()  # 获得鼠标的位置
         drawText(screen, "("+str(x)+","+str(y)+")", x, y)
         a.draw_arc(screen, (255, 0, 0))
+        tl.draw_line(screen, (255, 0, 0))
         # print(pygame.font.get_fonts())
         pygame.display.flip()
 
