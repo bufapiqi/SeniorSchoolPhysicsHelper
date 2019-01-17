@@ -2,6 +2,7 @@
 """
 import pygame
 import pymunk
+from util.math_util import coordinates_transform
 
 
 class Ball:
@@ -22,8 +23,7 @@ class Ball:
             self.__body = pymunk.Body(self.__mass, self.__moment, body_type=pymunk.Body.STATIC)
         else:
             self.__body = pymunk.Body(self.__mass, self.__moment)
-        # todo 这里调用util的坐标转换工具转换space到scene的坐标
-        self.__body.position = self.__position
+        self.__body.position = coordinates_transform(self.__position)
         self.__shape = pymunk.Circle(self.__body, self.__out_radius)
 
     def draw_ball(self, screen, color, border_width):

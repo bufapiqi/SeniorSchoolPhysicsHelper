@@ -5,6 +5,8 @@ import pygame
 from pygame.locals import *
 from model.arc import Arc
 from model.line import Line
+from model.ball import Ball
+from model.convex_polygon import Poly
 from pygameEngine.menu_item import MenuItem
 from pygameEngine.menu import Menu
 from pygameEngine.text import Text
@@ -17,8 +19,13 @@ def main():
     pygame.display.set_caption("现在用来测试")
     clock = pygame.time.Clock()   # 创建一个对象来帮助跟踪时间
 
-    line = Line((300, 300), (290, 300), (400, 300), 2, is_static=True)
+    line = Line((150, 150), (100, 100), (200, 200), 2, is_static=True)
     line.create_line_in_space()
+
+    ball = Ball(1, 2, 2, (350, 350), is_static=True)
+    ball.create_ball_in_space()
+
+    poly = Poly.create_box_with_centroid((200, 200), 10, 1, is_static=True)
 
     a = Arc((0, 200), (200, 0))
     a.create_arc_in_space()
@@ -47,13 +54,14 @@ def main():
                     menu.event = event
                     # item.event = event
 
-            # print(pygame.font.get_fonts())
             a.draw_arc(screen, (255, 0, 0))
-            pygame.draw.arc(screen, (0, 0, 0), ((200, 200), (100, 100)), 0, math.pi/2, 1)
+            # poly.draw_poly(screen, (0, 0, 255))
+            # pygame.draw.arc(screen, (0, 0, 0), ((200, 200), (100, 100)), 0, math.pi/2, 1)
+            # pygame.draw.line(screen, (0, 255, 0), (100, 100), (200, 200), 10)
+            line.draw_line(screen, (0, 255, 0))
+            # ball.draw_ball(screen, (0, 0, 255), 1)
             menu.draw_menu(screen)
             text.draw_text(screen)
-            line.draw_line(screen, (0, 255, 0))
-            pygame.draw.line(screen, (0, 0, 0), (100, 100), (200, 200), 10)
             pygame.display.flip()
 
             clock.tick(50)
