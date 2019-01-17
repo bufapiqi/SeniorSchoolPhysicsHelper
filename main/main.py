@@ -1,10 +1,10 @@
 """ 用来启动主程序  也可在这里面进行一些测试
 """
-# todo 写成一个类
 import sys
 import pygame
 from pygame.locals import *
 from model.arc import Arc
+from model.line import Line
 from pygameEngine.menu_item import MenuItem
 from pygameEngine.menu import Menu
 from pygameEngine.text import Text
@@ -16,6 +16,10 @@ def main():
     screen = pygame.display.set_mode((600, 600), 0, 32)
     pygame.display.set_caption("现在用来测试")
     clock = pygame.time.Clock()   # 创建一个对象来帮助跟踪时间
+
+    line = Line((300, 300), (290, 300), (400, 300), 2, is_static=True)
+    line.create_line_in_space()
+
     a = Arc((0, 200), (200, 0))
     a.create_arc_in_space()
 
@@ -46,9 +50,10 @@ def main():
             # print(pygame.font.get_fonts())
             a.draw_arc(screen, (255, 0, 0))
             pygame.draw.arc(screen, (0, 0, 0), ((200, 200), (100, 100)), 0, math.pi/2, 1)
-            # item.draw_item(screen)
             menu.draw_menu(screen)
             text.draw_text(screen)
+            line.draw_line(screen, (0, 255, 0))
+            pygame.draw.line(screen, (0, 0, 0), (100, 100), (200, 200), 10)
             pygame.display.flip()
 
             clock.tick(50)

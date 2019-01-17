@@ -12,7 +12,6 @@ def coordinates_transform(coordinate: tuple):
 
 
 def caculate_position_with_menu(rect: tuple, position: int, num_items: int):
-    # todo 从相对位置计算 在screen上的绝对位置
     if abs(rect[2] - rect[0]) >= abs(rect[3] - rect[1]):  # 横向
         item_width = int(abs(rect[2] - rect[0]) / (num_items / 2 + 1))
         item_height = int(abs(rect[3] - rect[1]) / 2)
