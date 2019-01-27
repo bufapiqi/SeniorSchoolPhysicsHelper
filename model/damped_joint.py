@@ -23,7 +23,7 @@ class DampedJoint(BaseJoint):
                                           self.__rest_length, self.__stiffness, self.__damping)
 
     def draw_joint(self, screen, color: tuple):
-        # todo  实现画弹簧的逻辑
+        # todo  徐海溦 实现画弹簧的逻辑
         # 用第一个点得来的向量
         vector_a = Vec2d(self.__anchor_a)
         # 用第二个点得来的向量
