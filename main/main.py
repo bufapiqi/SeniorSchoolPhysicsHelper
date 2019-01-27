@@ -11,6 +11,8 @@ from pygameEngine.menu_item import MenuItem
 from pygameEngine.menu import Menu
 from pygameEngine.text import Text
 import math
+# todo 徐琪  resources里面需要一些，一致的图标，比如 开始/暂停/继续，保存、计时，这些图标都需要画风一致，可以自己复制
+# todo main文件，在画布里画出来看看
 
 
 def main():
