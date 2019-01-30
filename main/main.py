@@ -33,13 +33,22 @@ def main():
     a.create_arc_in_space()
 
     print(sys.argv[0])
-    up_image = pygame.image.load("../resources/pause.jpg")
-    down_image = pygame.image.load("../resources/play.jpg")
+    up_image = pygame.image.load("../resources/pause.png")
+    down_image = pygame.image.load("../resources/play1.png")
+    save_image = pygame.image.load("../resources/save.png")
+    time_image = pygame.image.load("../resources/time1.png")
     print("length:"+str(up_image.get_width()) + "  height:"+str(up_image.get_height()))
     menu = Menu((300, 300), (400, 400))
-    item = MenuItem(up_image, down_image, (menu.rect_s[0], menu.rect_s[1],
-                                           menu.rect_e[0], menu.rect_e[1]), 1, 1)
-    menu.add_item(item)
+    menu1 = Menu((500, 10), (560, 100))
+    item = MenuItem(up_image, down_image, (menu1.rect_s[0], menu1.rect_s[1],
+                                           menu1.rect_e[0], menu1.rect_e[1]), 1, 4)
+    item1 = MenuItem(save_image, save_image, (menu1.rect_s[0], menu1.rect_s[1],
+                                              menu1.rect_e[0], menu1.rect_e[1]), 2, 4)
+    item2 = MenuItem(time_image, time_image, (menu1.rect_s[0], menu1.rect_s[1],
+                                              menu1.rect_e[0], menu1.rect_e[1]), 3, 4)
+    menu1.add_item(item)
+    menu1.add_item(item1)
+    menu1.add_item(item2)
     text = Text("A", 500, 500)
 
 
@@ -62,7 +71,7 @@ def main():
             # pygame.draw.line(screen, (0, 255, 0), (100, 100), (200, 200), 10)
             line.draw_line(screen, (0, 255, 0))
             # ball.draw_ball(screen, (0, 0, 255), 1)
-            menu.draw_menu(screen)
+            menu1.draw_menu(screen)
             text.draw_text(screen)
             pygame.display.flip()
 

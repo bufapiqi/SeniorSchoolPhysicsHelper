@@ -5,6 +5,31 @@
 """
 
 
-class FileUtil:  # todo 徐琪 完善该类
-    def __init__(self):
-        pass
+import configparser
+#import os
+#from resources.static1 import *
+class FileUtil(object):
+    def __init__(self,file):
+        self.configfile=file
+        self.cfg=configparser.ConfigParser()
+    def cfg_read(self):
+        self.cfg.read(self.configfile)
+        d=dict(self.cfg._sections)
+        for k in d:
+            d[k]=dict(d[k])
+        return d
+
+        '''返回字典'''
+    def del_item(self,section,key):
+        self.cfg.remove_option(section,key)
+    def del_section(self,section):
+        self.cfg.remove_section(section)
+    def add_section(self,section):
+        self.cfg.add_section(section)
+    def set_item(self,section,key,value):
+        self.cfg.set(section,key,value)
+    def save(self):
+        fp=open(self.configfile,'w')
+        self.cfg.write(fp)
+        fp.close()
+
