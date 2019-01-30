@@ -7,28 +7,28 @@ import configparser
 
 
 class FileUtil(object):
-    def __init__(self, file):
+    def __init__(self, file: str):
         self.__configfile = file
         self.__cfg = configparser.ConfigParser()
 
     def cfg_read(self):
         self.__cfg.read(self.__configfile)
-        d = dict(self.__cfg._sections)
+        d = dict(self.__cfg.sections())   # 这里不能直接dict会报错
+        # sections() 返回的是section的列表并不是所有的key-value
         for k in d:
             d[k] = dict(d[k])
         return d
 
-        # 返回字典
-    def del_item(self, section, key):
+    def del_item(self, section: str, key: str):
         self.__cfg.remove_option(section, key)
 
-    def del_section(self, section):
+    def del_section(self, section: str):
         self.__cfg.remove_section(section)
 
-    def add_section(self, section):
+    def add_section(self, section: str):
         self.__cfg.add_section(section)
 
-    def set_item(self, section, key, value):
+    def set_item(self, section: str, key: str, value: str):
         self.__cfg.set(section, key, value)
 
     def save(self):
@@ -43,4 +43,9 @@ class FileUtil(object):
     @property
     def conf(self):
         return self.__cfg
+
+
+if __name__ == '__main__':
+    a = FileUtil("../resources/static.config")
+    print(a.cfg_read())
 
