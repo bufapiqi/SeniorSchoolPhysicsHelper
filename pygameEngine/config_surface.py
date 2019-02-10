@@ -3,12 +3,13 @@
     保存的文件路径，或者选择读取文件的路径，或者一个空画布 等等
 """
 
-# todo  熊凯奇
 
 from tkinter import *
 from tkinter.filedialog import askdirectory
+from tkinter.messagebox import *
 
 from util.file_util import FileUtil, MyParser
+import os
 
 
 class ConfigSurface:
@@ -27,17 +28,25 @@ class ConfigSurface:
         self.savePath.set(path_)
 
     def print_path(self):
-        print(self.path.get())
-        self.path.set('')
+        # todo 熊凯奇 差一个页面跳转
+        if os.path.exists(self.path.get()):
+            print(self.path.get())
+            self.path.set('')
+        else:
+            showerror('错误', '输入路径不存在')
 
     def update_config(self):
+        # todo 熊凯奇 这里还差一个页面跳转
         a = FileUtil("../resources/static.config")
-        a.add_section1("d")
-        a.save()
-        a.set_item("d", 'length', self.length.get())
-        a.set_item('d', 'width', self.width.get())
-        a.set_item('d', 'savepath', self.width.get())
-        a.save()
+        if os.path.exists(self.savePath.get()):
+            a.add_section1("d")
+            a.save()
+            a.set_item("d", 'length', self.length.get())
+            a.set_item('d', 'width', self.width.get())
+            a.set_item('d', 'savepath', self.savePath.get())
+            a.save()
+        else:
+            showerror('错误', '输入路径不存在')
 
     def __init__(self, command='新建'):
         root = Tk()
