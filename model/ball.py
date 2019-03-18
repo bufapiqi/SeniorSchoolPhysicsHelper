@@ -31,7 +31,7 @@ class Ball:
 
     def draw_ball(self, screen, color, border_width):
         bx = int(self.__body.position.x)
-        by = int(self.__body.position.y)
+        by = 600 - int(self.__body.position.y)
         pygame.draw.circle(screen, color, (bx, by), self.__out_radius, border_width)
 
     def is_created(self):
@@ -85,13 +85,13 @@ class Ball:
     def shape(self):
         return self.__shape
 
-    def body_clicked(self):
-        if self.__event is None:
+    def body_clicked(self, event):
+        if event is None:
             return False
         else:
-            point_x, point_y = self.__event.pos
+            point_x, point_y = event.pos
         bx = int(self.__body.position.x)
-        by = int(self.__body.position.y)
+        by = 600 - int(self.__body.position.y)
         if math.pow(point_x - bx, 2) + math.pow(point_y - by, 2) <= math.pow(self.out_radius, 2):
             return True
         else:

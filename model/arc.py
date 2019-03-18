@@ -8,6 +8,7 @@ import math
 import pymunk.autogeometry
 from pygame.constants import QUIT
 
+from model.ball import Ball
 from model.game_model import GameModel
 from util.math_util import one_dot_round, coordinates_transform
 
@@ -56,13 +57,14 @@ class Arc(GameModel):
 
     @staticmethod
     def __caculate_coordinates(points: list, step: float, radius: int, centroid: tuple):
+
         if step <= 0 and step > 90:
             raise RuntimeError("step have to 0 < x <= 90")
         start = 0
         while start <= 91:
             y = radius * math.cos(math.radians(start))
             x = radius * math.sin(math.radians(start))
-            points.append((centroid[0] - x, y))  # todo 需要根据不同方向的弧线，转换不同的坐标
+            points.append((centroid[0] - x, centroid[1] + y))  # todo 需要根据不同方向的弧线，转换不同的坐标
             start = start + step
         return points
 
@@ -71,8 +73,10 @@ class Arc(GameModel):
 
     @staticmethod
     def __get_centroid(start_point: tuple, end_point: tuple, is_up: bool, is_right: bool):
+        print(start_point)
+        print(end_point)
         if is_up:
-            if start_point[1] - end_point[1] > 0:
+            if start_point[1] - end_point[1] < 0:
                 y = start_point[1]
             else:
                 y = end_point[1]
@@ -91,6 +95,7 @@ class Arc(GameModel):
                 x = start_point[0]
             else:
                 x = end_point[0]
+        print((x,y))
         return x, y
 
     @property
@@ -134,6 +139,14 @@ class Arc(GameModel):
         return False
 
 
+def drawText(self, text, posx, posy, textHeight=24, fontColor=(0, 0, 0), backgroudColor=(255,255,255)):
+    fontObj = pygame.font.SysFont('arial', textHeight)  # 通过字体文件获得字体对象
+    textSurfaceObj = fontObj.render(text, True, fontColor, backgroudColor)  # 配置要显示的文字
+    textRectObj = textSurfaceObj.get_rect()  # 获得要显示的对象的rect
+    textRectObj.center = (posx, posy)  # 设置显示对象的坐标
+    self.blit(textSurfaceObj, textRectObj)  # 绘制字
+
+
 if __name__ == "__main__":
     pygame.init()
     screen = pygame.display.set_mode((600, 600))
@@ -148,7 +161,12 @@ if __name__ == "__main__":
     moving = False
     clicked = []
 
-    a = Arc((0, 100), (100, 0))
+    ball = Ball(1, 3, 50, (100, 100), None, True)
+    ball.create_ball_in_space()
+    space.add(ball.body, ball.shape)
+
+    a = Arc((200, 200), (300, 300))
+
     a.create_arc_in_space()
     temp_s = a.arc_shapes
     for i in temp_s:
@@ -172,13 +190,26 @@ if __name__ == "__main__":
                                 clicked.remove(a)
                             else:
                                 clicked.append(a)
+                        if ball.body_clicked(event):
+                            if ball in clicked:
+                                clicked.remove(ball)
+                            else:
+                                clicked.append(ball)
 
             if moving and event.type == COUNT:
                 counts += 1
+        x, y = pygame.mouse.get_pos()  # 获得鼠标的位置
+        drawText(screen, "(" + str(x) + "," + str(y) + ")", x, y)
         if a in clicked:
             a.draw_arc(screen, (255, 255, 0))
         else:
             a.draw_arc(screen, (255, 0, 0))
+        if ball in clicked:
+            ball.draw_ball(screen, (255, 255, 0), 0)
+        else:
+            ball.draw_ball(screen, (255, 0, 0), 0)
         space.step(1 / 50.0)  # 3
         pygame.display.flip()
         clock.tick(50)
+
+

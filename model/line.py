@@ -14,7 +14,7 @@ from util.Vector2D import Vec2d
 
 class Line(GameModel):
     def __init__(self, center_point: tuple, a_point: tuple, b_point: tuple, line_width: int,
-                 friction: int = 0, is_static: bool = False, event=None):
+                 friction: int = 0, is_static: bool = True, event=None):
         self.__center_point = center_point
         # a_point和b_point均为center_point的相对位置
         self.__a_point = a_point
@@ -88,7 +88,6 @@ class Line(GameModel):
     def b_point(self, p: tuple):
         self.__b_point = p
 
-
     def body_clicked(self, event) -> bool:
         if event is None:
             return False
@@ -116,7 +115,7 @@ if __name__ == '__main__':
     space = pymunk.Space()  # 2  创建一个space， space是模拟的基本单位，可以在space上添加bodies,shapes,和joints
     space.gravity = (0.0, -900.0)  # 设置 space的重力
 
-    line = Line((5, 5), (1, 1), (9, 9), 2)
+    line = Line((300, 500), (-200, 0), (200, 0), 2)
     line.create_line_in_space()
     space.add(line.body, line.line)
     ball = Ball(1, 3, 50, (100, 100))

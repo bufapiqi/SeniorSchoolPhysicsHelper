@@ -4,6 +4,9 @@
 import pygame
 import sys
 
+from model.arc import Arc
+from model.line import Line
+
 
 def recognize(positions: list, sign: int):
     return sign
@@ -31,9 +34,11 @@ polys = []
 lines = []
 arcs = []
 clicked = []
+tmp_sign = 0
 
 moving = False
 counts = 0
+moving_count = 0
 
 # 写入生成数据的文件
 path = 'G:/temp.txt'
@@ -45,11 +50,23 @@ while True:
         if event.type == pygame.MOUSEBUTTONDOWN:  # 获取点击鼠标事件
             if event.button == 1:  # 点击鼠标左键
                 counts = 0
+                moving_count = 0
                 moving = True
         if event.type == pygame.MOUSEBUTTONUP:  # 获取松开鼠标事件
             if event.button == 1:  # 松开鼠标左键
                 moving = False
+                if moving_count <= 2:
+                    tmp = polys + lines + arcs
+                    for entity in tmp:
+                        if entity.body_clicked(event):
+                            if entity in clicked:
+                                clicked.remove(entity)
+                            else:
+                                clicked.append(entity)
+                            break
                 positions.append((0, 0))
+        if moving and event.type == COUNT:
+            moving_count += 1
         # 这样操作就是停止操作的时间段内不得发生超过两次事件，发生时positions清0,即间隔市场大约为t~2t，此处为0.5到1s
         if len(positions) != 0 and not moving and event.type == COUNT:
             counts += 1
@@ -57,7 +74,12 @@ while True:
                 print(positions)
                 # f = open(path, 'a')
                 # f.write(str(positions)+'\n')
-
+                if recognize(positions, 0) == 0:
+                    more = max(positions[-2][0] - positions[0][0], positions[-2][1]-positions[0][1])
+                    a = Arc(positions[0], (positions[0]+more, positions[1]+more))
+                    arcs.append(a)
+                elif recognize(positions, 1) == 1:
+                    l = Line()
                 positions.clear()
     if moving:
         positions.append(pygame.mouse.get_pos())

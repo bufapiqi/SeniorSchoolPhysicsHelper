@@ -25,7 +25,7 @@ def main():
 
     tl = Line((150, 150), (-10, 0), (100, 0), 5, is_static=True)
     tl.create_line_in_space()
-    space.add(tl.line)
+    space.add(tl.body, tl.line)
 
     # lines = add_static_L(space)
     lines = add_L(space)
@@ -163,6 +163,7 @@ def draw_lines(screen, lines):  # 通过pymunk空间里线 在pygame里划线
 def to_pygame(p):  # 从pymunk到pygame的坐标转换
     """Small hack to convert pymunk to pygame coordinates"""
     return int(p.x), int(-p.y+600)
+
 
 if __name__ == '__main__':
     sys.exit(main())
