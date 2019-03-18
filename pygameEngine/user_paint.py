@@ -4,6 +4,11 @@
 import pygame
 import sys
 
+
+def recognize(positions: list, sign: int):
+    return sign
+
+
 # 初始化
 pygame.init()
 
@@ -22,6 +27,10 @@ COUNT = pygame.USEREVENT + 1
 pygame.time.set_timer(COUNT, 500)
 
 positions = []
+polys = []
+lines = []
+arcs = []
+clicked = []
 
 moving = False
 counts = 0
@@ -46,8 +55,9 @@ while True:
             counts += 1
             if counts == 2:
                 print(positions)
-                f = open(path, 'a')
-                f.write(str(positions)+'\n')
+                # f = open(path, 'a')
+                # f.write(str(positions)+'\n')
+
                 positions.clear()
     if moving:
         positions.append(pygame.mouse.get_pos())

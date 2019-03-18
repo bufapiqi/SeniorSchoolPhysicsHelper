@@ -1,12 +1,15 @@
 """ 一个basic圆的model，每一个实例都是pymunk空间中的一个圆实体，可以在直接调用draw方法来画自己
 """
+import math
+
 import pygame
 import pymunk
 from util.math_util import coordinates_transform
 
 
 class Ball:
-    def __init__(self, mass, in_radius: int, out_radius: int, position: tuple, moment: int=None, is_static: bool=False):
+    def __init__(self, mass, in_radius: int, out_radius: int, position: tuple, moment: int = None,
+                 is_static: bool = False):
         self.__mass = mass
         self.__in_radius = in_radius
         self.__out_radius = out_radius
@@ -27,7 +30,9 @@ class Ball:
         self.__shape = pymunk.Circle(self.__body, self.__out_radius)
 
     def draw_ball(self, screen, color, border_width):
-        pygame.draw.circle(screen, color, self.__position, self.__out_radius, border_width)
+        bx = int(self.__body.position.x)
+        by = int(self.__body.position.y)
+        pygame.draw.circle(screen, color, (bx, by), self.__out_radius, border_width)
 
     def is_created(self):
         return self.__body is not None
@@ -80,6 +85,14 @@ class Ball:
     def shape(self):
         return self.__shape
 
-
-
-
+    def body_clicked(self):
+        if self.__event is None:
+            return False
+        else:
+            point_x, point_y = self.__event.pos
+        bx = int(self.__body.position.x)
+        by = int(self.__body.position.y)
+        if math.pow(point_x - bx, 2) + math.pow(point_y - by, 2) <= math.pow(self.out_radius, 2):
+            return True
+        else:
+            return False

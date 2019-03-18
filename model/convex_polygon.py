@@ -1,13 +1,18 @@
 """ 一个basic凸多边形的model，每一个实例都是pymunk空间中的一个凸多边形实体，可以在直接调用draw方法来画自己
 """
+import sys
+
 import pygame
 import pymunk
+from pygame.constants import QUIT
 from pymunk import Vec2d
+
+from model.game_model import GameModel
 from util.math_util import coordinates_transform
 COLLTYPE_DEFAULT = 0
 
 
-class Poly:
+class Poly(GameModel):
     def __init__(self, mass: int, centroid: tuple, poly_points: list, poly_fraction: int=0,
                  moment: int=None, is_static: bool=False):
         self.__mass = mass
@@ -18,6 +23,7 @@ class Poly:
         self.__is_static = is_static
         self.__body = None
         self.__shape = None
+        self.__create_poly_in_space()
 
     def __create_poly_in_space(self):
         if self.__moment is None:
@@ -34,10 +40,12 @@ class Poly:
 
     # 返回一个已经创建好body和shape的四边形
     @staticmethod
-    def create_box_with_centroid(centroid: tuple, size: int, mass: int, moment: int=None,
+    def create_box_with_centroid(centroid: tuple, width: int, height: int, mass: int, moment: int=None,
                                  fraction: int=0, is_static: bool=False):
-        poly = Poly(mass, centroid, [(-size, -size), (-size, size), (size, size), (size, -size)],
+        poly = Poly(mass, centroid, [(-width, -height), (-width, height), (width, height), (width, -height)],
                     fraction, moment, is_static=is_static)
+        print(poly.poly_points)
+        print(poly.centroid)
         poly.__create_poly_in_space()
         return poly
 
@@ -70,7 +78,7 @@ class Poly:
 
     @property
     def poly_points(self):
-        return self.__centroid
+        return self.__poly_points
 
     @property
     def poly_fraction(self):
@@ -79,3 +87,63 @@ class Poly:
     @property
     def moment(self):
         return self.moment
+
+    def body_clicked(self, event) -> bool:
+        # 均为实际长宽的一半
+        print(self.poly_points)
+        print(123)
+        width, height = self.poly_points[2]
+        center_x, center_y = self.centroid
+        pos_x, pos_y = event.pos
+        in_x = (center_x-width) < pos_x < (center_x+width)
+        in_y = (center_y-height) < pos_y < (center_y+height)
+        return in_x and in_y
+
+
+if __name__ == '__main__':
+    pygame.init()
+    screen = pygame.display.set_mode((600, 600))
+    clock = pygame.time.Clock()  # 创建一个对象来帮助跟踪时间
+    space = pymunk.Space()  # 2  创建一个space， space是模拟的基本单位，可以在space上添加bodies,shapes,和joints
+    space.gravity = (0.0, -900.0)  # 设置 space的重力
+    COUNT = pygame.USEREVENT + 1
+    # 调整画图间隔时间
+    pygame.time.set_timer(COUNT, 500)
+
+    poly = Poly.create_box_with_centroid((150, 150), 20, 10, 10, None, 0, True)
+    space.add(poly.body, poly.shape)
+
+    counts = 0
+    moving = False
+    clicked = []
+
+    while True:
+        screen.fill((255, 255, 255))  # 越后面添加上去的 越在画布的上面
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                sys.exit(0)
+            if event.type == pygame.MOUSEBUTTONDOWN:  # 获取点击鼠标事件
+                if event.button == 1:  # 点击鼠标左键
+                    counts = 0
+                    moving = True
+            if event.type == pygame.MOUSEBUTTONUP:  # 获取松开鼠标事件
+                if event.button == 1:  # 松开鼠标左键
+                    moving = False
+                    print(counts)
+                    if counts <= 2:
+                        if poly.body_clicked(event):
+                            if poly in clicked:
+                                clicked.remove(poly)
+                            else:
+                                clicked.append(poly)
+
+            if moving and event.type == COUNT:
+                counts += 1
+        if poly in clicked:
+            poly.draw_poly(screen, (255, 255, 0), 2)
+        else:
+            poly.draw_poly(screen, (255, 0, 0), 2)
+        space.step(1 / 50.0)  # 3
+        pygame.display.flip()
+        clock.tick(50)
+

@@ -6,9 +6,11 @@ from model.arc import Arc
 from model.line import Line
 import pymunk
 
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((600, 600))
+    print(screen.get_height())
     pygame.display.set_caption("Joints. Just wait and the L will tip over")
     clock = pygame.time.Clock()   # 创建一个对象来帮助跟踪时间
 
