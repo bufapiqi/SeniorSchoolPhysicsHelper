@@ -76,7 +76,7 @@ counts = 0
 moving_count = 0
 
 # 写入生成数据的文件
-path = 'G:/temp.txt'
+path = 'temp.txt'
 
 while True:
     for event in pygame.event.get():
@@ -107,6 +107,7 @@ while True:
             counts += 1
             if counts == 2:
                 print(positions)
+
                 positions = add_positions(positions)
                 f = open(path, 'a')
                 f.write(str(positions)+'\n')
@@ -114,6 +115,7 @@ while True:
                 # if recognize(positions, 0) == 0:
                 #     more = max(positions[-2][0] - positions[0][0], positions[-2][1] - positions[0][1])
                 #     a = Arc(positions[0], (positions[0][0] + more, positions[0][1] + more))
+
                 #     arcs.append(a)
                 # elif recognize(positions, 1) == 1:
                 #     l = Line()
