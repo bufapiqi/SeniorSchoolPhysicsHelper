@@ -12,24 +12,37 @@ def coordinates_transform(coordinate: tuple):
 
 
 def caculate_position_with_menu(rect: tuple, position: int, num_items: int):
-    if abs(rect[2] - rect[0]) >= abs(rect[3] - rect[1]):  # 横向
-        item_width = int(abs(rect[2] - rect[0]) / (num_items / 2 + 1))
-        item_height = int(abs(rect[3] - rect[1]) / 2)
-        item_start_x = rect[0] + (position - 1) * item_width
-        if position % 2 == 0:
-            item_start_y = rect[1] + item_height
-        else:
-            item_start_y = rect[1]
-    else:  # 纵向
-        item_width = int(abs(rect[2] - rect[0]) / 2)
-        item_height = int(abs(rect[3] - rect[1]) / (num_items / 2 + 1))
-        if position % 2 == 0:
-            item_start_x = rect[0] + item_width
-        else:
-            item_start_x = rect[0]
-        item_start_y = rect[1] + (position - 1) * item_height
+    # 此处默认横向
+    item_width = int((abs(rect[2] - rect[0]) - (num_items-1) * 10) / num_items)
+    item_height = int(abs(rect[3] - rect[1]))
+    item_start_x = rect[0] + (position - 1) * (item_width+10)
+    item_start_y = rect[1]
     item_end_x = item_start_x + item_width
     item_end_y = item_start_y + item_height
     return (item_start_x, item_start_y), (item_end_x, item_end_y)
+    # 考虑的比较完整的代码，但是交错显示貌似效果不大好
+    # else:
+    #     if abs(rect[2] - rect[0]) >= abs(rect[3] - rect[1]):  # 横向
+    #         item_width = int(abs(rect[2] - rect[0]) / (num_items / 2 + 1))
+    #         item_height = int(abs(rect[3] - rect[1]) / 2)
+    #         item_start_x = rect[0] + (position - 1) * item_width
+    #         if position % 2 == 0:
+    #             item_start_y = rect[1] + item_height
+    #         else:
+    #             item_start_y = rect[1]
+    #     else:  # 纵向
+    #         item_width = int(abs(rect[2] - rect[0]) / 2)
+    #         item_height = int(abs(rect[3] - rect[1]) / (num_items / 2 + 1))
+    #         if position % 2 == 0:
+    #             item_start_x = rect[0] + item_width
+    #         else:
+    #             item_start_x = rect[0]
+    #         item_start_y = rect[1] + (position - 1) * item_height
+    #     item_end_x = item_start_x + item_width
+    #     item_end_y = item_start_y + item_height
+    #     return (item_start_x, item_start_y), (item_end_x, item_end_y)
+
+
+
 
 

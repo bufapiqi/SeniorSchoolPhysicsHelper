@@ -13,7 +13,7 @@ COLLTYPE_DEFAULT = 0
 
 
 class Poly(GameModel):
-    def __init__(self, mass: int, centroid: tuple, poly_points: list, poly_fraction: int=0,
+    def __init__(self, mass: int, centroid: tuple, poly_points: list, poly_fraction: float=0,
                  moment: int=None, is_static: bool=False):
         self.__mass = mass
         self.__centroid = centroid
@@ -23,9 +23,9 @@ class Poly(GameModel):
         self.__is_static = is_static
         self.__body = None
         self.__shape = None
-        self.__create_poly_in_space()
+        self.create_poly_in_space()
 
-    def __create_poly_in_space(self):
+    def create_poly_in_space(self):
         if self.__moment is None:
             self.__moment = pymunk.moment_for_poly(self.__mass, self.__poly_points)
         self.__body = pymunk.Body(self.__mass, self.__moment, body_type=self.__is_static)
@@ -41,12 +41,9 @@ class Poly(GameModel):
     # 返回一个已经创建好body和shape的四边形
     @staticmethod
     def create_box_with_centroid(centroid: tuple, width: int, height: int, mass: int, moment: int=None,
-                                 fraction: int=0, is_static: bool=False):
+                                 fraction: float=0, is_static: bool=False):
         poly = Poly(mass, centroid, [(-width, -height), (-width, height), (width, height), (width, -height)],
                     fraction, moment, is_static=is_static)
-        print(poly.poly_points)
-        print(poly.centroid)
-        poly.__create_poly_in_space()
         return poly
 
     def is_created(self):
@@ -55,8 +52,8 @@ class Poly(GameModel):
     def draw_poly(self, screen, poly_color, width=0):  # width=0代表填充整个多边形区域
         points = []
         for i in self.__poly_points:
-            temp_x = self.__centroid[0] + i[0]
-            temp_y = self.__centroid[1] + i[1]
+            temp_x = self.__body.position.x + i[0]
+            temp_y = screen.get_height() - self.__body.position.y + i[1]
             points.append((temp_x, temp_y))
         pygame.draw.polygon(screen, poly_color, points, width)
 
@@ -91,9 +88,10 @@ class Poly(GameModel):
     def body_clicked(self, event) -> bool:
         # 均为实际长宽的一半
         print(self.poly_points)
-        print(123)
+        print("polygon is clicked!")
         width, height = self.poly_points[2]
-        center_x, center_y = self.centroid
+        position = self.__body.position
+        center_x, center_y = position.x, 600 - position.y
         pos_x, pos_y = event.pos
         in_x = (center_x-width) < pos_x < (center_x+width)
         in_y = (center_y-height) < pos_y < (center_y+height)
@@ -110,7 +108,7 @@ if __name__ == '__main__':
     # 调整画图间隔时间
     pygame.time.set_timer(COUNT, 500)
 
-    poly = Poly.create_box_with_centroid((150, 150), 20, 10, 10, None, 0, True)
+    poly = Poly.create_box_with_centroid((150, 150), 20, 10, 10, None, 0)
     space.add(poly.body, poly.shape)
 
     counts = 0
@@ -135,7 +133,9 @@ if __name__ == '__main__':
                             if poly in clicked:
                                 clicked.remove(poly)
                             else:
-                                clicked.append(poly)
+                                if len(clicked) > 0:
+                                    clicked.clear()
+                                    clicked.append(poly)
 
             if moving and event.type == COUNT:
                 counts += 1

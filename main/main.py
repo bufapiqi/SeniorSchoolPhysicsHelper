@@ -27,7 +27,7 @@ def main():
     ball = Ball(1, 2, 2, (350, 350), is_static=True)
     ball.create_ball_in_space()
 
-    poly = Poly.create_box_with_centroid((200, 200), 10, 1, is_static=True)
+    poly = Poly.create_box_with_centroid((200, 200), 10, 10, 1, is_static=True)
 
     a = Arc((0, 200), (200, 0))
     a.create_arc_in_space()
@@ -50,8 +50,6 @@ def main():
     menu1.add_item(item1)
     menu1.add_item(item2)
     text = Text("A", 500, 500)
-
-
 
     while True:
             screen.fill((255, 255, 255))  # 越后面添加上去的 越在画布的上面

@@ -73,8 +73,8 @@ class Arc(GameModel):
 
     @staticmethod
     def __get_centroid(start_point: tuple, end_point: tuple, is_up: bool, is_right: bool):
-        print(start_point)
-        print(end_point)
+        print('arc start point:'+str(start_point))
+        print('arc end point:'+str(end_point))
         if is_up:
             if start_point[1] - end_point[1] < 0:
                 y = start_point[1]
@@ -95,7 +95,6 @@ class Arc(GameModel):
                 x = start_point[0]
             else:
                 x = end_point[0]
-        print((x,y))
         return x, y
 
     @property
@@ -161,11 +160,11 @@ if __name__ == "__main__":
     moving = False
     clicked = []
 
-    ball = Ball(1, 3, 50, (100, 100), None, True)
+    ball = Ball(1, 3, 50, (100, 100), None, False)
     ball.create_ball_in_space()
     space.add(ball.body, ball.shape)
 
-    a = Arc((200, 200), (300, 300))
+    a = Arc((200, 200), (300, 300), 1)
 
     a.create_arc_in_space()
     temp_s = a.arc_shapes

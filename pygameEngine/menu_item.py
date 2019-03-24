@@ -21,23 +21,27 @@ class MenuItem:
         self.__menu_rect = menu_rect
         self.__num_items = num_items
         self.__event = event
+        self.__clicked = False
 
     def draw_item(self, screen):
-        if self.is_click():
+        if self.__clicked:
             screen.blit(self.__up_image, self.__start_point)
         else:
             screen.blit(self.__down_image, self.__start_point)
 
-    def is_click(self):
-        if self.__event is None:
+    def is_clicked(self, event):
+        if event is None:
             point_x, point_y = 0, 0
         else:
-            point_x, point_y = self.__event.pos
+            point_x, point_y = event.pos
         position = (Vec2d(self.__end_point) - Vec2d(self.__start_point)) / 2 + Vec2d(self.__start_point)
         x, y = position.x, position.y
         w, h = self.__up_image.get_size()
         in_x = x - w/2 < point_x < x + w/2
         in_y = y - h/2 < point_y < y + h/2
+        if in_x and in_y:
+            print('clicked!')
+            self.__clicked = not self.__clicked
         return in_x and in_y
 
     @property

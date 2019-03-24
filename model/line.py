@@ -14,7 +14,7 @@ from util.Vector2D import Vec2d
 
 class Line(GameModel):
     def __init__(self, center_point: tuple, a_point: tuple, b_point: tuple, line_width: int,
-                 friction: int = 0, is_static: bool = True, event=None):
+                 friction: float = 0, is_static: bool = True, event=None):
         self.__center_point = center_point
         # a_point和b_point均为center_point的相对位置
         self.__a_point = a_point
@@ -61,7 +61,7 @@ class Line(GameModel):
         return self.__fraction
 
     @friction.setter
-    def friction(self, friction: int):
+    def friction(self, friction: float):
         self.__friction = friction
 
     @property

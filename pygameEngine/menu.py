@@ -17,7 +17,6 @@ class Menu:
             self.__menu_item = menu_item
 
     def draw_menu(self, screen):
-        screen.set_clip(self.__rect_s, self.__rect_e)
         if type(self.__background) == str or type(self.__background) == tuple:
             # 读图片
             # todo 图片的逻辑
@@ -29,10 +28,10 @@ class Menu:
                              (self.__rect_e[0], self.__rect_s[1]))  # 上边框
             pygame.draw.line(screen, (255, 0, 0), (self.__rect_e[0], self.__rect_s[1]),
                              (self.__rect_e[0], self.__rect_e[1]))  # 右边框
-            pygame.draw.line(screen, (255, 0, 0), (self.__rect_e[0], self.__rect_e[1]),
-                             (self.__rect_s[0], self.__rect_e[1]))  # 下边框
-            pygame.draw.line(screen, (255, 0, 0), (self.__rect_s[0], self.__rect_s[1]),
-                             (self.__rect_s[0], self.__rect_e[1]))  # 左边框
+            pygame.draw.line(screen, (255, 0, 0), (self.__rect_e[0], self.__rect_e[1]-1),
+                             (self.__rect_s[0], self.__rect_e[1]-1))  # 下边框
+            pygame.draw.line(screen, (255, 0, 0), (self.__rect_s[0]+1, self.__rect_s[1]),
+                             (self.__rect_s[0]+1, self.__rect_e[1]))  # 左边框
             # 现在先画个边框
             # raise RuntimeError("background should be image_path or rgb_tuple !!!")
         for i in self.__menu_item:
@@ -43,6 +42,7 @@ class Menu:
 
     def is_click(self):
         point_x, point_y = self.__event.pos
+        self.__event = None
         in_x = self.rect_s[0] < point_x < self.__rect_e[0]
         in_y = self.__rect_s[1] < point_y < self.__rect_e[1]
         return in_x and in_y
