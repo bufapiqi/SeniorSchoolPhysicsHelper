@@ -64,6 +64,9 @@ def main():
     arcs = []
     clicked = None
 
+    # 看起来识别是来不及了，那么加上index表示
+    index = 0
+
     # 标志在空间中创建实体只创建一次
     running_sign = 0
 
@@ -201,6 +204,18 @@ def main():
                                 break
                         print('state changed: True')
                         # running = True
+                    if not running:
+                        moving = False
+                        if moving_count <= 2:
+                            tmp = polys + lines + arcs
+                            for entity in tmp:
+                                if entity.body_clicked(event):
+                                    if entity in clicked:
+                                        clicked.remove(entity)
+                                    else:
+                                        clicked.append(entity)
+                                    break
+                        positions.append((0, 0))
             if len(positions) != 0 and not moving and event.type == COUNT:
                 stop_count += 1
                 if stop_count == 2:
@@ -213,6 +228,8 @@ def main():
                     #     arcs.append(a)
                     # elif recognize(positions, 1) == 1:
                     #     l = Line()
+                    index = (index+1) % 4
+
                     positions.clear()
         # 判断是否长按绘图
         if moving:
