@@ -69,31 +69,52 @@ def border_painter(screen, start, width, height):
 
 
 # 显示速度和移动轨迹
-# 作图时调用该方法，直接使用sub(screen)即可，运行时传入clicked的（时间，速度）列表和坐标（默认时间间隔见COUNT）
+# 作图时调用该方法，直接使用sub(screen)即可，运行时传入clicked的速度列表和坐标（默认时间间隔见COUNT）
 def subwindow(screen, list1 = None, list2 = None):
+    print(list1)
+    print(list2)
     size = width, height = 270, 270
     start1 = (615, 15)
     start2 = (615, 315)
     border_painter(screen, start1, width, height)
     border_painter(screen, start2, width, height)
+    drawText(screen, 'v/t', 600, 10)
+    drawText(screen, 'poly', 600, 310)
 
-    if list1 is not None:
+    if list1 is not None and len(list1) != 0:
+        print(len(list1))
         if len(list1) > 30:
             list1 = list1[-30:]
-        index = 0
         points = []
         max_rate = max(list1)
-        min_rate = min(list2)
+        min_rate = min(list1)
         dist = max_rate - min_rate
-        # for index, rate in enumerate(list1):
-        #
-        #     points.append(start1[0] + 9 * index, start1[1] + height - )
+        if dist == 0:
+            dist = 1
+        for index, rate in enumerate(list1):
+            points.append((start1[0] + 9 * index, start1[1] + height - height*((rate-min_rate)/dist)))
+        if len(points) == 1:
+            pygame.draw.line(screen, RED, points[0], points[0])
+        else:
+            for i in range(len(points)-1):
+                pygame.draw.line(screen, RED, points[i], points[i+1])
+
+    if list2 is not None and len(list2) != 0:
+        print(len(list2))
+        points2 = []
+        for point in list2:
+            points2.append((start2[0] + point[0]*0.45, start2[1] + height - point[1]*0.45))
+        if len(points2) == 1:
+            pygame.draw.line(screen, RED, points2[0], points2[0])
+        else:
+            for i in range(len(points2)-1):
+                pygame.draw.line(screen, RED, points2[i], points2[i+1])
 
 
 def main():
     pygame.init()
 
-    size = width, height = 600, 600  # 设置屏幕尺寸
+    size = width, height = 900, 600  # 设置屏幕尺寸
     # BLUE = 0, 0, 255
     # WHITE = 255, 255, 255
     # BLACK = 0, 0, 0
@@ -107,8 +128,9 @@ def main():
     space.gravity = (0.0, -10.0)  # 设置 space的重力
 
     COUNT = pygame.USEREVENT + 1
+    COUNT_TIME = 500
     # 调整画图间隔时间
-    pygame.time.set_timer(COUNT, 500)
+    pygame.time.set_timer(COUNT, COUNT_TIME)
 
     polys = []
     lines = []
@@ -176,6 +198,11 @@ def main():
     positions = []
     clip_before = screen.get_clip()
 
+    # 保存选中滑块的速率列表和坐标
+    clicked_rates = []
+    clicked_pos = []
+    last_one = None
+
     start_count = 0
 
     while True:
@@ -236,6 +263,9 @@ def main():
                             running = False
                             for poly in polys:
                                 poly.create_poly_in_space()
+                        clicked_pos.clear()
+                        clicked_rates.clear()
+                        last_one = None
                         positions.clear()
 
                     elif item2.is_clicked(event):
@@ -269,15 +299,17 @@ def main():
                     elif moving_count <= 2:  # 按住鼠标小于1s，判断为点击
                         print("less than 1s")
                         positions.clear()
-                        tmp = polys + lines + arcs
-                        for entity in tmp:
-                            if entity.body_clicked(event):
-                                if entity == clicked:
-                                    clicked = None
-                                else:
-                                    clicked = entity
-                                break
-                        print('state changed: True')
+                        if not running:
+                            tmp = polys + lines + arcs
+                            for entity in tmp:
+                                if entity.body_clicked(event):
+                                    if entity == clicked:
+                                        clicked = None
+                                        print('entity clicked!: False')
+                                    else:
+                                        clicked = entity
+                                        print('entity clicked!: True')
+                                    break
                         # running = True
 
                     elif not running:
@@ -295,6 +327,17 @@ def main():
                         print(positions)
 
             elif event.type == COUNT:
+                if running and isinstance(clicked, Poly):
+                    if last_one is None:
+                        last_one = clicked.body.position
+                    else:
+                        now = clicked.body.position
+                        print(str(now)+'123')
+                        if now.x < 600 and now.y > 0:
+                            distance = int(math.sqrt(math.pow(now[0] - last_one[0], 2)+math.pow(now[1] - last_one[1], 2)))
+                            clicked_rates.append(distance * 2)
+                            last_one = now
+
                 if len(positions) != 0 and not moving:
                     print('paint over')
                     print(positions)
@@ -314,8 +357,8 @@ def main():
                         elif index == 0:
                             start = positions[0]
                             end = positions[-2]
-                            width = max(math.fabs(start[0]-end[0]), math.fabs(start[1] - end[1]))
-                            real = (start[0]+width, start[1]+width)
+                            arc_width = max(math.fabs(start[0]-end[0]), math.fabs(start[1] - end[1]))
+                            real = (start[0]+arc_width, start[1]+arc_width)
                             index1 = start
                             index2 = real
                             a = Arc(start, real)
@@ -362,6 +405,11 @@ def main():
         if moving:
             positions.append(pygame.mouse.get_pos())
 
+        if running and isinstance(clicked, Poly):
+            pos = clicked.body.position
+            if pos.x < 600 and pos.y > 0:
+                clicked_pos.append(clicked.body.position)
+
         # 前端显示坐标，辅助debug
         x, y = pygame.mouse.get_pos()  # 获得鼠标的位置
         drawText(screen, "(" + str(x) + "," + str(y) + ")", x, y)
@@ -369,7 +417,7 @@ def main():
         for i in range(len(positions) - 1):
             p1 = positions[i]
             p2 = positions[i + 1]
-            # print(i) 发现一个很有意思的事情，我在这里i+3似乎没有意义，下一个i依旧只加了1
+            # print(i) 发现一个很有意思的事情，我在这里i+3似乎没有意义，下一个i依旧只加了1,应该是因为对于range函数里面是迭代器
             # if p2 == (0, 0):
             #     i = i + 3
             if p1 != (0, 0) and p2 != (0, 0):
@@ -419,6 +467,8 @@ def main():
         screen.set_clip(None)
         if paint_arrow:
             add_arrow(screen, (300, 300), (400, 200))
+
+        subwindow(screen, clicked_rates, clicked_pos)
 
         menu1.draw_menu(screen)
 
